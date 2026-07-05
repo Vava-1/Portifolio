@@ -71,6 +71,15 @@
       "details": {
         "ip": "::1"
       }
+    },
+    {
+      "id": "mr7w7hhe-umc6xo",
+      "timestamp": "2026-07-05T14:34:53.378Z",
+      "type": "admin_login",
+      "summary": "Admin logged in successfully.",
+      "details": {
+        "ip": "::1"
+      }
     }
   ]
 }
