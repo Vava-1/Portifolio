@@ -1,6 +1,43 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Component } from 'react';
 import { RefreshCw, Trash2, Edit2, Save, X, ExternalLink, Activity, Bot, Database, LogOut, Key, Plus, Check } from 'lucide-react';
+
+// Error boundary so the page never shows "page couldn't load" — instead
+// it shows a friendly message with a retry button.
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, info) {
+    console.error('[admin] React error:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center px-5" style={{ background: 'var(--color-ink)' }}>
+          <div className="panel p-7 max-w-md">
+            <p className="eyebrow mb-3">Something broke</p>
+            <h1 className="font-display text-xl font-medium mb-2" style={{ color: 'var(--color-mist)' }}>The dashboard hit an error.</h1>
+            <p className="text-sm mb-4" style={{ color: 'var(--color-haze)' }}>
+              This is usually a temporary issue. Try reloading. If it keeps happening, the agent activity log on GitHub will show what went wrong.
+            </p>
+            <pre className="text-xs font-mono p-3 rounded mb-4 overflow-x-auto" style={{ background: 'var(--color-ink)', color: '#F87171', border: '1px solid var(--color-line)' }}>
+              {String(this.state.error?.message || this.state.error || 'Unknown error')}
+            </pre>
+            <button onClick={() => window.location.reload()} className="btn-primary w-full justify-center">
+              <RefreshCw className="w-4 h-4" /> Reload page
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const TYPE_COLORS = {
   sync: 'var(--color-violet)',
@@ -12,7 +49,7 @@ const TYPE_COLORS = {
   error: '#F87171',
 };
 
-export default function AdminDashboard() {
+function AdminDashboard() {
   const [state, setState] = useState(null);
   const [activity, setActivity] = useState([]);
   const [autoProjects, setAutoProjects] = useState([]);
@@ -37,10 +74,10 @@ export default function AdminDashboard() {
       const res = await fetch('/api/agent/state');
       const data = await res.json();
       setState(data);
-      setAutoProjects(data?.knowledge ? await (await fetch('/api/agent/projects')).json() : { projects: [] });
-      if (data?.ok && data.autoProjectsCount !== undefined) {
-        // Already loaded
-      }
+      // Note: do NOT fetch projects here — loadProjects() handles that.
+      // Previously this line set autoProjects to the full response object
+      // {ok: true, projects: [...]} instead of just the array, which
+      // caused autoProjects.map() to crash on the next render.
     } catch (e) {
       console.error(e);
     } finally {
@@ -213,14 +250,14 @@ export default function AdminDashboard() {
   const stats = state?.knowledge
     ? [
         { label: 'Repos tracked', value: state.knowledge.repoCount, icon: Database },
-        { label: 'Auto-discovered projects', value: autoProjects.length, icon: Bot },
-        { label: 'Activity entries', value: activity.length, icon: Activity },
+        { label: 'Auto-discovered projects', value: Array.isArray(autoProjects) ? autoProjects.length : 0, icon: Bot },
+        { label: 'Activity entries', value: Array.isArray(activity) ? activity.length : 0, icon: Activity },
         { label: 'Last sync', value: state.knowledge.lastSyncAt ? new Date(state.knowledge.lastSyncAt).toLocaleString() : 'never', icon: RefreshCw, isText: true },
       ]
     : [
         { label: 'Repos tracked', value: 0, icon: Database },
         { label: 'Auto-discovered projects', value: 0, icon: Bot },
-        { label: 'Activity entries', value: activity.length, icon: Activity },
+        { label: 'Activity entries', value: Array.isArray(activity) ? activity.length : 0, icon: Activity },
         { label: 'Last sync', value: 'never', icon: RefreshCw, isText: true },
       ];
 
@@ -294,7 +331,7 @@ CRON_SECRET           (Optional) If set, external cron services must
           <p className="text-sm mb-4" style={{ color: 'var(--color-haze)' }}>
             These are projects the agent found by scanning your GitHub. They appear on the public site alongside your curated list. Edit them to make the copy nicer, or remove the ones you don't want shown.
           </p>
-          {autoProjects.length === 0 ? (
+          {(!Array.isArray(autoProjects) || autoProjects.length === 0) ? (
             <div className="panel p-6 text-center">
               <p className="text-sm" style={{ color: 'var(--color-haze)' }}>No auto-discovered projects yet. Run a sync to find some.</p>
             </div>
@@ -358,7 +395,7 @@ CRON_SECRET           (Optional) If set, external cron services must
           </p>
 
           {/* Existing config items */}
-          {configItems.length > 0 && (
+          {(Array.isArray(configItems) && configItems.length > 0) && (
             <div className="space-y-2 mb-4">
               {configItems.map(item => (
                 <div key={item.key} className="panel p-4 flex items-center justify-between gap-3">
@@ -448,7 +485,7 @@ CRON_SECRET           (Optional) If set, external cron services must
             <div className="panel p-6 text-center">
               <p className="text-sm" style={{ color: 'var(--color-haze)' }}>Loading activity...</p>
             </div>
-          ) : activity.length === 0 ? (
+          ) : (!Array.isArray(activity) || activity.length === 0) ? (
             <div className="panel p-6 text-center">
               <p className="text-sm" style={{ color: 'var(--color-haze)' }}>No activity yet. The agent logs every sync, chat, and project change here.</p>
             </div>
@@ -509,5 +546,15 @@ CRON_SECRET           (Optional) If set, external cron services must
         </div>
       )}
     </main>
+  );
+}
+
+// Wrap with error boundary so crashes show a friendly message instead of
+// "page couldn't load".
+export default function AdminPageWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <AdminDashboard />
+    </ErrorBoundary>
   );
 }
