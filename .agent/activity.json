@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "id": "mr7vaw3o-c3kab0",
+      "timestamp": "2026-07-05T14:09:32.676Z",
+      "type": "admin_login",
+      "summary": "Admin logged in successfully.",
+      "details": {
+        "ip": "::1"
+      }
+    }
+  ]
+}
