@@ -1,0 +1,266 @@
+{
+  "lastSyncAt": "2026-07-05T14:10:00.544Z",
+  "githubUser": "Vava-1",
+  "portfolioRepo": "Portifolio",
+  "repoCount": 12,
+  "repos": [
+    {
+      "name": "Portifolio",
+      "description": "",
+      "language": "JavaScript",
+      "homepage": "https://portifolio-eight-chi-87.vercel.app",
+      "html_url": "https://github.com/Vava-1/Portifolio",
+      "updated_at": "2026-07-05T14:09:37Z",
+      "pushed_at": "2026-07-05T14:09:33Z",
+      "size": 135,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "A personal portfolio site built around a live AI assistant trained on Valentin's real background, projects, and skills, instead of a static \"About Me\" page.\n\nDark, deep indigo-black base (not flat black) with two accent colors doing different jobs: warm amber representing the human/Rwandan side of the work, cool violet representing the AI/algorithmic side. Typography pairs a warm serif (Fraunces) for headlines against a precise monospace (JetBrains Mono) for labels and data, body text in Inter. The signature visual element is a slowly drifting topographic line pattern in the hero, evoking Rwan",
+      "techStack": [
+        "JavaScript",
+        "Next.js",
+        "React",
+        "Google Gemini",
+        "Framer Motion"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "Kipharma_Rwanda_Ltd",
+      "description": "",
+      "language": "TypeScript",
+      "homepage": "",
+      "html_url": "https://github.com/Vava-1/Kipharma_Rwanda_Ltd",
+      "updated_at": "2026-07-05T10:46:21Z",
+      "pushed_at": "2026-05-21T21:59:22Z",
+      "size": 591,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "A modern, professional web platform for Kipharma Rwanda Ltd - Rwanda's leading retail pharmacy chain and medical distribution company. Built with cutting-edge technologies and international best practices.\n\nKipharma Rwanda Ltd is part of the Kiphagru group (Kipharma, Unipharma, Agrotech), serving as Rwanda's premier pharmaceutical distributor and retail pharmacy chain. With multiple locations across Kigali, we provide:\n\n- Retail Pharmacy Services: Prescription dispensing, OTC medications, and professional clinical consultation\n- Wholesale Distribution: Validated cold-chain delivery of pharmace",
+      "techStack": [
+        "TypeScript",
+        "Render",
+        "React",
+        "Tailwind CSS",
+        "Framer Motion",
+        "TanStack Start",
+        "Vite"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "P.B.INSTITUTE",
+      "description": "",
+      "language": "TypeScript",
+      "homepage": "",
+      "html_url": "https://github.com/Vava-1/P.B.INSTITUTE",
+      "updated_at": "2026-07-03T23:58:54Z",
+      "pushed_at": "2026-07-03T23:58:50Z",
+      "size": 612,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "A full-stack web application for Pacemaker Institute, a vocational training center in Kigali, Rwanda.\n\n- Frontend: React 19, TypeScript, Vite 7, Tailwind CSS, shadcn/ui\n- Backend: Hono, tRPC v11, Drizzle ORM, MySQL\n- Auth: OAuth 2.0 with JWT sessions (separate JWT secret for sessions vs. OAuth client secret)\n- Payments: MTN MoMo API integration (server-side amount verification, webhook, idempotency)\n- Email: Resend (HTML-escaped templates)\n\nbash\n\nnpm install\n\ncp .env.example .env\n\nnpm run db:push:dev\n\nnpm run db:seed\n\nnpm run dev\n\napp/\n├── api/          # Backend API (Hono + tRPC)\n│   ├── lib/",
+      "techStack": [
+        "TypeScript",
+        "Next.js",
+        "React",
+        "Hono",
+        "tRPC",
+        "Drizzle ORM",
+        "AWS S3",
+        "bcrypt"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "SAWA-CITI",
+      "description": "",
+      "language": "TypeScript",
+      "homepage": "",
+      "html_url": "https://github.com/Vava-1/SAWA-CITI",
+      "updated_at": "2026-07-03T22:59:09Z",
+      "pushed_at": "2026-07-03T22:59:02Z",
+      "size": 135,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "Rwanda's second-largest supermarket chain's full-stack e-commerce platform. Nine branches, four autonomous Gemini AI agents, semantic product search, real RWF pricing, Flutterwave payments (MTN MoMo + Airtel + card).\n\n---\n\nThis platform requires a Google Gemini API key. AI features incur per-request usage costs charged by Google, entirely separate from your Vercel, Neon, or Flutterwave subscriptions.\n\n| AI Feature | Trigger | Est. cost |\n|---|---|---|\n| Maya shopping assistant | Per chat message | ~$0.00008/message |\n| Recipe to Cart | Per recipe | ~$0.0005/run |\n| Semantic product search | Pe",
+      "techStack": [
+        "TypeScript",
+        "Drizzle ORM",
+        "Vercel",
+        "Next.js",
+        "React",
+        "Google Gemini",
+        "bcrypt",
+        "JWT"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "VISIT-RWANDA",
+      "description": "",
+      "language": "TypeScript",
+      "homepage": "https://visit-rwanda-omega.vercel.app",
+      "html_url": "https://github.com/Vava-1/VISIT-RWANDA",
+      "updated_at": "2026-07-03T21:42:18Z",
+      "pushed_at": "2026-07-03T21:42:15Z",
+      "size": 18605,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "",
+      "techStack": [
+        "TypeScript",
+        "Prisma",
+        "Tailwind CSS",
+        "Next.js",
+        "React",
+        "Framer Motion"
+      ],
+      "hasReadme": false
+    },
+    {
+      "name": "SULFO-SHOP",
+      "description": "",
+      "language": "JavaScript",
+      "homepage": "https://sulfo-shop.vercel.app",
+      "html_url": "https://github.com/Vava-1/SULFO-SHOP",
+      "updated_at": "2026-06-30T08:54:38Z",
+      "pushed_at": "2026-06-30T08:54:34Z",
+      "size": 141,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "A complete, production-ready e-commerce website built for Sulfo Rwanda Industries — showcasing their full product catalog (laundry soap, toilet soap, body care, NIL drinking water, and more) with online ordering, cart, checkout, and a full admin dashboard.\n\nBuilt by GIVA TECH Ltd as a custom showcase / sales demo.\n\n- Storefront: Hero, categories, best sellers, brand showcase, full product catalog with search/filter/sort\n- Product pages: Image gallery, ratings, stock status, related products\n- Cart & Checkout: Persistent cart (localStorage), coupon codes, 3-step checkout, MTN MoMo / Card / Cash",
+      "techStack": [
+        "JavaScript",
+        "Render",
+        "Next.js",
+        "React",
+        "Prisma",
+        "bcrypt",
+        "JWT"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "UTV",
+      "description": "",
+      "language": "TypeScript",
+      "homepage": "https://utv-pi.vercel.app",
+      "html_url": "https://github.com/Vava-1/UTV",
+      "updated_at": "2026-06-27T10:07:48Z",
+      "pushed_at": "2026-06-27T10:07:43Z",
+      "size": 233,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "UNA TANTUM VOCE is an integrated artistic and educational platform bridging classical/gospel music with formative philosophical literature. Features include music streaming, digital library, e-commerce for books/scores, concert ticketing, and an AI-powered assistant.\n\n- React 18 + TypeScript + Vite\n- Tailwind CSS 3.4 (with custom UTV design tokens)\n- Framer Motion (animations)\n- React-i18next (8 languages: EN, FR, ES, DE, IT, PT, RW, SW)\n- Lucide React (icons)\n- Axios (HTTP client)\n\n- Python 3.11 + FastAPI\n- SQLAlchemy ORM 2.0 + PostgreSQL (SQLite for dev)\n- Alembic (database migrations)\n- PyP",
+      "techStack": [
+        "TypeScript"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "Pacemaker-Institute2",
+      "description": "",
+      "language": "TypeScript",
+      "homepage": "",
+      "html_url": "https://github.com/Vava-1/Pacemaker-Institute2",
+      "updated_at": "2026-06-18T16:52:09Z",
+      "pushed_at": "2026-06-18T16:52:05Z",
+      "size": 1022,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "[](https://github.com/Vava-1/Pacemaker-Institute2/actions/workflows/deploy.yml)\n[](https://opensource.org/licenses/MIT)\n[](https://nodejs.org)\n[](https://www.typescriptlang.org/)\n[](https://codecov.io/gh/Vava-1/Pacemaker-Institute2)\n\nA modern, full-stack e-learning platform built with React 19, Hono, and MySQL. Features AI-powered tutoring, Stripe payments, real-time leaderboards, and comprehensive certification.\n\n- 🎓 Course Management - Create, publish, and manage courses with multi-lesson modules\n- 🤖 AI Tutor - Anthropic Claude-powered tutoring with contextual learning support\n- 💳 Stripe ",
+      "techStack": [
+        "TypeScript",
+        "Docker",
+        "Drizzle ORM",
+        "Railway",
+        "Tailwind CSS",
+        "Next.js",
+        "React",
+        "Hono"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "ORION",
+      "description": "Autonomous AI-powered inventory management agent for a 100-SKU+ electronics store. Built with FastAPI, Pandas, and Anthropic Claude.",
+      "language": "Python",
+      "homepage": "",
+      "html_url": "https://github.com/Vava-1/ORION",
+      "updated_at": "2026-06-15T21:29:51Z",
+      "pushed_at": "2026-05-05T15:58:34Z",
+      "size": 1931,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "Version 1.0 — World-Class Multi-Agent Autonomous Platform\n\nORION is a sovereign, self-healing, multi-agent AI platform that autonomously manages inventory operations. It monitors, reasons, decides, acts, negotiates, reports, and heals itself — continuously, without being asked.\n\nbash\n\ngit clone https://github.com/your-org/orion.git\ncd orion\n\ncp backend/.env.example backend/.env\n\nmake dev\n\nmake seed\n\n- Docker & Docker Compose\n- Python 3.12+ (for local development)\n- Node.js 20+ (for frontend development)\n- API keys for:\n  - Google Gemini\n  - Groq\n\n- PostgreSQL 16 — Primary database with pgvecto",
+      "techStack": [
+        "Python",
+        "Docker",
+        "Render",
+        "React",
+        "Tailwind CSS"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "INEZA-COMPANY-Ltd",
+      "description": "",
+      "language": "HTML",
+      "homepage": "",
+      "html_url": "https://github.com/Vava-1/INEZA-COMPANY-Ltd",
+      "updated_at": "2026-06-09T07:28:39Z",
+      "pushed_at": "2026-06-09T07:28:36Z",
+      "size": 245,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "---\n\nineza-platform/\n│\n├── index.html                    ← Homepage / Landing Page\n├── contact.html                  ← Contact page with map, team, FAQ\n│\n├── css/\n│   ├── variables.css             ← Complete design token system\n│   └── base.css                  ← Global styles, components, utilities\n│\n├── js/\n│   └── app.js                    ← Shared JS: auth, payments, toasts, globe, forms\n│\n├── auth/\n│   ├── signin.html               ← Sign In page (social + email)\n│   └── signup.html               ← Multi-step registration (5 steps)\n│\n├── jobs/\n│   └── board.html                ← Full job ",
+      "techStack": [
+        "HTML",
+        "Docker"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "PBI-Academy",
+      "description": "Languages Teaching Academy",
+      "language": "TypeScript",
+      "homepage": "",
+      "html_url": "https://github.com/Vava-1/PBI-Academy",
+      "updated_at": "2026-05-25T21:15:31Z",
+      "pushed_at": "2026-05-25T21:15:26Z",
+      "size": 473,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "Positioning: \"PBI Academy — Master Languages & Crush Global Certifications with AI-Powered Mastery.\"\n\nWelcome to the PBI Academy repository. This project is built as a highly scalable, AI-powered e-learning platform aimed at competing with industry giants by offering deep specialization in language learning and official exam simulations (TOEFL, IELTS, DELF, TCF).\n\n- Deep specialization in language + official exam simulation.\n- Multilingual interface (English, French, Kiswahili, German).\n- Strong mobile-first + offline capabilities.\n- Enterprise-ready for schools and immigration prep partners.\n",
+      "techStack": [
+        "TypeScript",
+        "Docker",
+        "Render"
+      ],
+      "hasReadme": true
+    },
+    {
+      "name": "Maersk",
+      "description": "Excellent project",
+      "language": "TypeScript",
+      "homepage": "",
+      "html_url": "https://github.com/Vava-1/Maersk",
+      "updated_at": "2026-05-17T14:50:43Z",
+      "pushed_at": "2026-05-17T14:50:39Z",
+      "size": 404,
+      "stargazers_count": 0,
+      "topics": [],
+      "readmeExcerpt": "AfriSwarm is a production-grade, enterprise-class autonomous multi-agent swarm built for Maersk-level global shipping and logistics operations. It features 14 persistent, hyper-specialized AI agents that work together as a cohesive intelligence, coordinated by a supreme Orchestrator and protected by an ever-vigilant System Guardian.\n\n---\n\nAfriSwarm Architecture\n======================\n\n                    [ User Interface - React 19 ]\n                              |\n                    [ FastAPI + WebSocket Gateway ]\n                              |\n              [ Orchestrator Agent - Master Co",
+      "techStack": [
+        "TypeScript",
+        "Docker",
+        "Kubernetes",
+        "Render",
+        "Next.js",
+        "React"
+      ],
+      "hasReadme": true
+    }
+  ]
+}
