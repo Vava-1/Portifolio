@@ -69,10 +69,27 @@ export default function AdminDashboard() {
   }, []);
 
   useEffect(() => {
-    loadState();
-    loadActivity();
-    loadProjects();
+    loadState().then(() => {
+      // After loading state, if the knowledge base is empty or the last sync
+      // was more than 6 hours ago, kick off a background sync automatically.
+      // The user doesn't have to remember to click the button.
+      loadActivity();
+      loadProjects();
+    });
   }, [loadState, loadActivity, loadProjects]);
+
+  // Auto-sync when the dashboard loads and the knowledge base is stale.
+  useEffect(() => {
+    if (!state?.knowledge?.lastSyncAt) return;
+    const lastSync = new Date(state.knowledge.lastSyncAt).getTime();
+    const sixHours = 6 * 60 * 60 * 1000;
+    if (Date.now() - lastSync > sixHours) {
+      handleSync();
+    }
+    // We intentionally only depend on state.knowledge.lastSyncAt here so this
+    // fires once per stale check, not on every state update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state?.knowledge?.lastSyncAt]);
 
   const handleSync = async () => {
     setSyncing(true);
@@ -199,8 +216,22 @@ export default function AdminDashboard() {
           </div>
           {!state?.knowledge && (
             <div className="panel p-5 mt-4" style={{ borderColor: 'rgba(232,163,61,0.35)' }}>
-              <p className="text-sm" style={{ color: 'var(--color-mist)' }}>The agent hasn't synced yet.</p>
-              <p className="text-xs mt-1" style={{ color: 'var(--color-haze)' }}>Click "Sync now" above. The agent will pull all your GitHub repos and start building its knowledge base.</p>
+              <p className="text-sm font-medium mb-2" style={{ color: 'var(--color-mist)' }}>The agent hasn't synced yet.</p>
+              <p className="text-xs mb-3" style={{ color: 'var(--color-haze)' }}>Before the first sync works, you need to set these environment variables in Vercel (Settings, then Environment Variables):</p>
+              <pre className="text-xs font-mono p-3 rounded overflow-x-auto" style={{ background: 'var(--color-ink)', color: 'var(--color-mist)', border: '1px solid var(--color-line)' }}>
+{`GITHUB_PAT            A fine-grained PAT with read access to all your
+                      repos and read+write on the Portifolio repo
+                      (so the agent can commit state files).
+GITHUB_OWNER          Vava-1
+GITHUB_PORTFOLIO_REPO Portifolio
+GEMINI_API_KEY        Free key from Google AI Studio. Powers the chat
+                      and the auto project description writer.
+ADMIN_PASSWORD        The password you'll use to log in here.
+ADMIN_SESSION_SECRET  A long random string (run: openssl rand -hex 32)
+CRON_SECRET           (Optional) If set, external cron services must
+                      send Authorization: Bearer <secret>`}
+              </pre>
+              <p className="text-xs mt-3" style={{ color: 'var(--color-haze)' }}>After setting them, redeploy on Vercel and click "Sync now" above. The agent will pull all your GitHub repos and start building its knowledge base.</p>
             </div>
           )}
         </section>
