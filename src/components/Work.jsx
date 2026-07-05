@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
+import { Code2, ExternalLink } from 'lucide-react';
 import { PROJECTS } from '@/data/profile';
 
 export default function Work() {
@@ -17,6 +18,10 @@ export default function Work() {
           <h2 className="font-display text-3xl sm:text-4xl font-medium" style={{ color: 'var(--color-mist)' }}>
             A timeline of things actually built and shipped, not toy projects.
           </h2>
+          <p className="text-sm mt-5 leading-relaxed max-w-xl" style={{ color: 'var(--color-haze)' }}>
+            Every entry below is real code in a real repository. Click through to read the source,
+            or follow the live link when one is deployed.
+          </p>
         </motion.div>
 
         <div className="relative">
@@ -44,15 +49,45 @@ export default function Work() {
                       </h3>
                       <p className="text-sm mt-0.5" style={{ color: 'var(--color-haze)' }}>{p.role}</p>
                     </div>
+                    <div className="flex items-center gap-2">
+                      {p.repo && (
+                        <a
+                          href={p.repo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="View source on GitHub"
+                          className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+                          style={{ background: 'var(--color-surface-2)', border: '1px solid var(--color-line)' }}
+                          onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-violet)'}
+                          onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--color-line)'}
+                        >
+                          <Code2 className="w-4 h-4" style={{ color: 'var(--color-haze)' }} />
+                        </a>
+                      )}
+                      {p.link && (
+                        <a
+                          href={p.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Visit live site"
+                          className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+                          style={{ background: 'var(--color-surface-2)', border: '1px solid var(--color-line)' }}
+                          onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-amber)'}
+                          onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--color-line)'}
+                        >
+                          <ExternalLink className="w-4 h-4" style={{ color: 'var(--color-amber)' }} />
+                        </a>
+                      )}
+                    </div>
                   </div>
 
                   <p className="text-sm sm:text-base leading-relaxed mb-4" style={{ color: 'var(--color-haze)' }}>
                     {p.description}
                   </p>
 
-                  <div className="flex items-center gap-2 mb-4 text-sm font-medium" style={{ color: 'var(--color-violet)' }}>
-                    <span className="font-mono text-xs" style={{ color: 'var(--color-haze)' }}>↳</span>
-                    {p.highlight}
+                  <div className="flex items-start gap-2 mb-4 text-sm font-medium" style={{ color: 'var(--color-violet)' }}>
+                    <span className="font-mono text-xs mt-0.5" style={{ color: 'var(--color-haze)' }}>↳</span>
+                    <span>{p.highlight}</span>
                   </div>
 
                   <div className="flex flex-wrap gap-2">

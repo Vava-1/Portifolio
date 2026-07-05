@@ -15,7 +15,7 @@ export default function Approach() {
         >
           <p className="eyebrow mb-3">How the work gets done</p>
           <h2 className="font-display text-3xl sm:text-4xl font-medium" style={{ color: 'var(--color-mist)' }}>
-            Four things that show up in every project.
+            The principles that show up in every project.
           </h2>
         </motion.div>
 

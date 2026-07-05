@@ -4,7 +4,7 @@ import { PROFILE } from '@/data/profile';
 export const metadata = {
   title: { default: `${PROFILE.name} — ${PROFILE.title}`, template: `%s | ${PROFILE.name}` },
   description: PROFILE.tagline,
-  keywords: ['Valentin Umuhire', 'AI Engineer Rwanda', 'GIVA TECH', 'AI Solution Architect', 'Kigali software engineer'],
+  keywords: ['Valentin Umuhire', 'Self-Made AI Engineer', 'AI Engineer Rwanda', 'GIVA TECH', 'AI Solution Architect', 'Kigali software engineer', 'Multi-agent AI', 'Next.js developer Rwanda', 'FastAPI engineer Africa'],
   openGraph: {
     title: `${PROFILE.name} — ${PROFILE.title}`,
     description: PROFILE.tagline,

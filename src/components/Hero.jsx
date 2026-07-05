@@ -25,14 +25,14 @@ export default function Hero() {
             </div>
 
             <h1 className="font-display text-[2.6rem] leading-[1.08] sm:text-6xl sm:leading-[1.05] font-medium mb-6" style={{ color: 'var(--color-mist)' }}>
-              I build <span className="italic text-gradient">AI-powered</span><br />
-              software that actually<br />
-              ships and runs.
+              <span className="italic text-gradient">Self-made</span> AI engineer<br />
+              building software that<br />
+              actually ships and runs.
             </h1>
 
             <p className="text-base sm:text-lg leading-relaxed max-w-lg mb-8" style={{ color: 'var(--color-haze)' }}>
               {PROFILE.tagline} Founder of GIVA TECH, building e-commerce platforms,
-              healthcare systems, and voice AI agents for Rwanda and East Africa.
+              multi-agent AI systems, and production software for Rwanda, East Africa, and beyond.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -41,7 +41,7 @@ export default function Hero() {
             </div>
 
             <div className="flex items-center gap-6 mt-12 pt-8 border-t" style={{ borderColor: 'var(--color-line)' }}>
-              {[['6', 'production platforms shipped'], ['4+', 'industries served'], ['1', 'AI assistant answering this question right now']].map(([n, l]) => (
+              {[['13+', 'production platforms shipped'], ['7', 'industries served'], ['1', 'AI assistant answering this question right now']].map(([n, l]) => (
                 <div key={l}>
                   <p className="font-display text-2xl" style={{ color: 'var(--color-amber)' }}>{n}</p>
                   <p className="text-xs mt-1 max-w-[8rem] leading-snug" style={{ color: 'var(--color-haze)' }}>{l}</p>

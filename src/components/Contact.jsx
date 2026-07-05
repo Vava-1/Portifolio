@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Loader2, CheckCircle2, Mail } from 'lucide-react';
+import { Send, Loader2, CheckCircle2, Mail, Phone, MessageCircle } from 'lucide-react';
 import { PROFILE } from '@/data/profile';
 
 export default function Contact() {
@@ -10,6 +10,10 @@ export default function Contact() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  // WhatsApp deep link: strip non-digits, prepend country code if needed
+  const whatsappHref = `https://wa.me/${PROFILE.whatsapp.replace(/[^\d]/g, '')}`;
+  const phoneHref = `tel:${PROFILE.phone.replace(/\s/g, '')}`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,13 +71,64 @@ export default function Contact() {
               is the form here. I read every message myself.
             </p>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--color-surface-2)' }}>
-                <Mail className="w-4 h-4" style={{ color: 'var(--color-amber)' }} />
-              </div>
-              <a href={`mailto:${PROFILE.email}`} className="font-mono text-sm" style={{ color: 'var(--color-mist)' }}>
-                {PROFILE.email}
+            {/* Email contacts */}
+            <div className="space-y-3 mb-6">
+              <a
+                href={`mailto:${PROFILE.email}`}
+                className="flex items-center gap-3 group"
+              >
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--color-surface-2)' }}>
+                  <Mail className="w-4 h-4" style={{ color: 'var(--color-amber)' }} />
+                </div>
+                <span className="font-mono text-sm break-all" style={{ color: 'var(--color-mist)' }}>
+                  {PROFILE.email}
+                </span>
               </a>
+              {PROFILE.emailSecondary && (
+                <a
+                  href={`mailto:${PROFILE.emailSecondary}`}
+                  className="flex items-center gap-3 group"
+                >
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--color-surface-2)' }}>
+                    <Mail className="w-4 h-4" style={{ color: 'var(--color-amber)' }} />
+                  </div>
+                  <span className="font-mono text-sm break-all" style={{ color: 'var(--color-mist)' }}>
+                    {PROFILE.emailSecondary}
+                  </span>
+                </a>
+              )}
+            </div>
+
+            {/* Phone + WhatsApp */}
+            <div className="flex flex-wrap gap-3">
+              {PROFILE.phone && (
+                <a
+                  href={phoneHref}
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-colors"
+                  style={{
+                    background: 'var(--color-surface-2)',
+                    border: '1px solid var(--color-line)',
+                  }}
+                >
+                  <Phone className="w-4 h-4" style={{ color: 'var(--color-amber)' }} />
+                  <span className="font-mono text-sm" style={{ color: 'var(--color-mist)' }}>{PROFILE.phone}</span>
+                </a>
+              )}
+              {PROFILE.whatsapp && (
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-colors"
+                  style={{
+                    background: 'rgba(37, 211, 102, 0.12)',
+                    border: '1px solid rgba(37, 211, 102, 0.35)',
+                  }}
+                >
+                  <MessageCircle className="w-4 h-4" style={{ color: '#25D366' }} />
+                  <span className="font-mono text-sm" style={{ color: 'var(--color-mist)' }}>WhatsApp</span>
+                </a>
+              )}
             </div>
           </motion.div>
 
