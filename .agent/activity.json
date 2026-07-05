@@ -62,6 +62,15 @@
           "summary": "The site you are looking at right now. A personal portfolio built around a live AI assistant that knows my real work."
         }
       }
+    },
+    {
+      "id": "mr7w63p8-gv6ekb",
+      "timestamp": "2026-07-05T14:33:48.860Z",
+      "type": "admin_login",
+      "summary": "Admin logged in successfully.",
+      "details": {
+        "ip": "::1"
+      }
     }
   ]
 }
