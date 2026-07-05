@@ -91,6 +91,17 @@
         "before": "unset",
         "after": "set"
       }
+    },
+    {
+      "id": "mr7w8yxt-r3u89i",
+      "timestamp": "2026-07-05T14:36:02.657Z",
+      "type": "chat",
+      "summary": "Visitor asked: \"What projects has Valentin built recently?\"",
+      "details": {
+        "question": "What projects has Valentin built recently?",
+        "answer": "I wasn't able to put together an answer for that. Try rephrasing, or use the contact form to reach Valentin directly.",
+        "ip": "::1"
+      }
     }
   ]
 }
