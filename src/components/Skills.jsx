@@ -13,9 +13,9 @@ export default function Skills() {
           transition={{ duration: 0.6 }}
           className="mb-16 max-w-2xl"
         >
-          <p className="eyebrow mb-3">Toolset</p>
+          <p className="eyebrow mb-3">Tools I actually use</p>
           <h2 className="font-display text-3xl sm:text-4xl font-medium" style={{ color: 'var(--color-mist)' }}>
-            What's actually under the hood.
+            What's under the hood.
           </h2>
         </motion.div>
 

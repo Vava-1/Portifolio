@@ -13,9 +13,9 @@ export default function Approach() {
           transition={{ duration: 0.6 }}
           className="mb-16 max-w-2xl"
         >
-          <p className="eyebrow mb-3">How the work gets done</p>
+          <p className="eyebrow mb-3">How I work</p>
           <h2 className="font-display text-3xl sm:text-4xl font-medium" style={{ color: 'var(--color-mist)' }}>
-            The principles that show up in every project.
+            The principles I actually follow.
           </h2>
         </motion.div>
 

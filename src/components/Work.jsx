@@ -14,13 +14,12 @@ export default function Work() {
           transition={{ duration: 0.6 }}
           className="mb-16 max-w-2xl"
         >
-          <p className="eyebrow mb-3">Selected work</p>
+          <p className="eyebrow mb-3">Things I've built</p>
           <h2 className="font-display text-3xl sm:text-4xl font-medium" style={{ color: 'var(--color-mist)' }}>
-            A timeline of things actually built and shipped, not toy projects.
+            Real code, real repos, real users. Not toy projects.
           </h2>
           <p className="text-sm mt-5 leading-relaxed max-w-xl" style={{ color: 'var(--color-haze)' }}>
-            Every entry below is real code in a real repository. Click through to read the source,
-            or follow the live link when one is deployed.
+            Every entry below is something I actually built and shipped myself. Click the code icon to read the source, or the external-link icon to visit the live site when one is deployed.
           </p>
         </motion.div>
 

@@ -34,7 +34,7 @@ export async function POST(req) {
 
     if (!apiKey) {
       return Response.json({
-        reply: `The AI assistant isn't connected yet, this needs a free Gemini API key set as GEMINI_API_KEY in the environment. In the meantime, feel free to reach out directly at ${PROFILE.email}.`,
+        reply: `I'm not connected to an AI model right now — Valentin needs to add a free Gemini API key as GEMINI_API_KEY in the environment. In the meantime, you can reach him directly at ${PROFILE.email} or on WhatsApp at ${PROFILE.whatsapp}.`,
         configured: false,
       });
     }

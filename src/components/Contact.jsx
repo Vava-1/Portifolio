@@ -64,11 +64,10 @@ export default function Contact() {
           >
             <p className="eyebrow mb-3">Get in touch</p>
             <h2 className="font-display text-3xl sm:text-4xl font-medium mb-5" style={{ color: 'var(--color-mist)' }}>
-              Have something worth building? Let's talk.
+              Want to work together? Let's talk.
             </h2>
             <p className="text-base leading-relaxed mb-8 max-w-md" style={{ color: 'var(--color-haze)' }}>
-              Whether it's a client project, a role, or a partnership, the fastest way to reach me
-              is the form here. I read every message myself.
+              Client project, a role, a partnership, or just a question — the form here is the fastest way to reach me. I read every message myself and reply personally.
             </p>
 
             {/* Email contacts */}

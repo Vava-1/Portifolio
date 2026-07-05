@@ -61,7 +61,7 @@ export default function Navbar() {
                 {l.label}
               </a>
             ))}
-            <a href="#contact" className="btn-primary ml-3 py-2.5 px-5 text-xs">Start a project</a>
+            <a href="#contact" className="btn-primary ml-3 py-2.5 px-5 text-xs">Say hello</a>
           </div>
 
           <button
@@ -97,7 +97,7 @@ export default function Navbar() {
             ))}
           </div>
           <a href="#contact" onClick={() => setOpen(false)} className="btn-primary mt-8 justify-center">
-            Start a project
+            Say hello
           </a>
         </div>
       )}

@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="py-10 border-t" style={{ borderColor: 'var(--color-line)' }}>
       <div className="section flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="font-mono text-xs" style={{ color: 'var(--color-haze)' }}>
-          © {year} {PROFILE.name}. Built in Kigali.
+          © {year} {PROFILE.name}. Hand-built in Kigali, Rwanda.
         </p>
         <div className="flex items-center gap-5">
           {PROFILE.socials.github && (

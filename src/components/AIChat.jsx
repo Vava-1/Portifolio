@@ -6,11 +6,11 @@ import { PROFILE } from '@/data/profile';
 
 const SUGGESTIONS = [
   'What has Valentin built recently?',
-  'What\'s his strongest skill?',
+  'Did he really teach himself?',
   'Is he available for new projects?',
 ];
 
-const WELCOME = `Hi, I'm an AI assistant trained on ${PROFILE.name}'s background and work. Ask me anything, what he's built, how he works, or what he's good at.`;
+const WELCOME = `Hi! I'm an AI assistant that knows ${PROFILE.name}'s work. Ask me what he's built, how he works, or anything else — I'll keep it honest.`;
 
 export default function AIChat() {
   const [messages, setMessages] = useState([{ role: 'assistant', content: WELCOME }]);
@@ -130,7 +130,7 @@ export default function AIChat() {
         <input
           value={input}
           onChange={e => setInput(e.target.value)}
-          placeholder="Ask about his projects, skills, or availability..."
+          placeholder="Ask anything — what he's built, how he works, whether he's free..."
           className="input-field flex-1 text-sm py-2.5"
           maxLength={500}
         />
@@ -146,7 +146,7 @@ export default function AIChat() {
 
       {notConfigured && (
         <p className="px-5 pb-4 text-xs" style={{ color: 'var(--color-haze)' }}>
-          Running in offline mode until a Gemini API key is connected.
+          Running in offline mode until a Gemini API key is added — but you can still reach Valentin directly via the contact section.
         </p>
       )}
     </div>
