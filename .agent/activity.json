@@ -80,6 +80,17 @@
       "details": {
         "ip": "::1"
       }
+    },
+    {
+      "id": "mr7w7jtl-336ozn",
+      "timestamp": "2026-07-05T14:34:56.409Z",
+      "type": "project_updated",
+      "summary": "Admin updated config: GEMINI_API_KEY.",
+      "details": {
+        "key": "GEMINI_API_KEY",
+        "before": "unset",
+        "after": "set"
+      }
     }
   ]
 }
