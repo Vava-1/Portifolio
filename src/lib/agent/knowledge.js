@@ -17,6 +17,7 @@
 
 import { readAgentState, writeAgentState, listRepos, getFile, listRepoRoot } from './github.js';
 import { logActivity } from './activity.js';
+import { readAgentStateFs } from './fs-fallback.js';
 
 const FILENAME = 'knowledge.json';
 const PORTFOLIO_REPO_DEFAULT = 'Portifolio';
@@ -192,8 +193,15 @@ export async function syncKnowledge() {
 
 // Public: read the current knowledge snapshot for the chat endpoint.
 export async function getKnowledge() {
-  const { content } = await readAgentState(FILENAME, null);
-  return content;
+  // Try GitHub API first (so we see the latest state, even before a redeploy).
+  try {
+    const { content } = await readAgentState(FILENAME, null);
+    if (content) return content;
+  } catch {
+    // GITHUB_PAT not set or unreachable. Fall through to fs.
+  }
+  // Fall back to filesystem (bundled at build time).
+  return readAgentStateFs(FILENAME);
 }
 
 // Public: a friendly string summary of all repos, suitable for injecting into

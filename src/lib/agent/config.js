@@ -17,7 +17,8 @@
 //
 // Resolution order for env vars used by the agent:
 //   1. process.env (Vercel env vars) — highest priority
-//   2. .agent/config.json values — fallback (XOR-decoded at runtime)
+//   2. .agent/config.json read via fs (bundled at build time, works without GITHUB_PAT)
+//   3. .agent/config.json read via GitHub API (works at runtime, requires GITHUB_PAT)
 
 import { readAgentState, writeAgentState } from './github.js';
 import { logActivity } from './activity.js';
@@ -52,26 +53,69 @@ function xorDecode(stored) {
   return out.toString('utf-8');
 }
 
+// Read config from the local filesystem (bundled at build time). This works
+// on Vercel without GITHUB_PAT because the .agent/ directory is part of the
+// repo and gets deployed alongside the code.
+let _fsConfigCache = null;
+function readFsConfig() {
+  if (_fsConfigCache !== null) return _fsConfigCache;
+  try {
+    // Use dynamic require so this doesn't break in the edge runtime.
+    // The path is relative to this file: src/lib/agent/config.js -> ../../../.agent/config.json
+    const path = require('path');
+    const fs = require('fs');
+    const configPath = path.join(process.cwd(), '.agent', 'config.json');
+    if (fs.existsSync(configPath)) {
+      const raw = fs.readFileSync(configPath, 'utf-8');
+      _fsConfigCache = JSON.parse(raw);
+    } else {
+      _fsConfigCache = null;
+    }
+  } catch {
+    _fsConfigCache = null;
+  }
+  return _fsConfigCache;
+}
+
 async function loadConfig() {
-  const state = await readAgentState(FILENAME, null);
-  if (state && state.content && state.content.values) {
-    return state;
+  // Try GitHub API first (so the admin dashboard always sees the latest
+  // state, even before a redeploy).
+  try {
+    const state = await readAgentState(FILENAME, null);
+    if (state && state.content && state.content.values) {
+      return state;
+    }
+  } catch {
+    // GITHUB_PAT not set, or GitHub API unreachable. Fall through to fs.
+  }
+  // Fall back to filesystem (bundled at build time).
+  const fsConfig = readFsConfig();
+  if (fsConfig && fsConfig.values) {
+    return { content: fsConfig, sha: null };
   }
   return { content: { values: {} }, sha: null };
 }
 
-// Public: get a config value. Falls back to process.env if not in the store.
+// Public: get a config value. Resolution order:
+//   1. process.env (Vercel env vars)
+//   2. .agent/config.json via GitHub API (runtime, needs GITHUB_PAT)
+//   3. .agent/config.json via fs (bundled at build time, works without GITHUB_PAT)
 export async function getConfigValue(key) {
-  // 1. Try process.env first (Vercel env vars take priority).
+  // 1. process.env wins.
   if (process.env[key]) return process.env[key];
-  // 2. Fall back to .agent/config.json (XOR-decoded).
-  const { content } = await loadConfig();
-  const stored = content?.values?.[key];
-  if (!stored) return null;
-  return xorDecode(stored);
+  // 2 & 3. Try the config store (GitHub API first, then fs).
+  try {
+    const { content } = await loadConfig();
+    const stored = content?.values?.[key];
+    if (!stored) return null;
+    return xorDecode(stored);
+  } catch {
+    return null;
+  }
 }
 
-// Public: set a config value. Writes to .agent/config.json (XOR-encoded).
+// Public: set a config value. Writes to .agent/config.json via GitHub API
+// (XOR-encoded). Requires GITHUB_PAT to be set.
 export async function setConfigValue(key, value) {
   const { content, sha } = await loadConfig();
   const values = content.values || {};
@@ -79,6 +123,8 @@ export async function setConfigValue(key, value) {
   values[key] = xorEncode(value);
   const newContent = { values, updatedAt: new Date().toISOString() };
   await writeAgentState(FILENAME, newContent, sha, `agent: set config value ${key} (${before} -> set)`);
+  // Invalidate the fs cache so the next read picks up the new value.
+  _fsConfigCache = null;
   await logActivity({
     type: 'project_updated',
     summary: `Admin updated config: ${key}.`,
@@ -95,7 +141,7 @@ export async function listConfig() {
   return Object.keys(values).map(k => ({
     key: k,
     isSet: Boolean(values[k]),
-    // Mask the value: show first 4 chars + asterisks.
+    // Mask the value: never reveal any part of it.
     preview: values[k] ? '••••' + '*'.repeat(20) : '',
   }));
 }
@@ -108,6 +154,7 @@ export async function deleteConfigValue(key) {
   delete values[key];
   const newContent = { values, updatedAt: new Date().toISOString() };
   await writeAgentState(FILENAME, newContent, sha, `agent: removed config value ${key}`);
+  _fsConfigCache = null;
   await logActivity({
     type: 'project_updated',
     summary: `Admin removed config: ${key}.`,
@@ -116,3 +163,4 @@ export async function deleteConfigValue(key) {
   }).catch(() => null);
   return true;
 }
+

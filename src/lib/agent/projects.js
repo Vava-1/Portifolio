@@ -12,6 +12,7 @@ import { readAgentState, writeAgentState } from './github.js';
 import { logActivity } from './activity.js';
 import { getKnowledge } from './knowledge.js';
 import { getConfigValue } from './config.js';
+import { readAgentStateFs } from './fs-fallback.js';
 
 const FILENAME = 'projects.json';
 
@@ -172,8 +173,16 @@ export async function discoverNewProjects() {
 // Public: list all auto-discovered projects. Merged with the hardcoded list
 // by the public site API.
 export async function listAutoProjects() {
-  const { content } = await loadProjects();
-  return content?.projects || [];
+  // Try GitHub API first.
+  try {
+    const { content } = await loadProjects();
+    if (content?.projects) return content.projects;
+  } catch {
+    // Fall through to fs.
+  }
+  // Fall back to filesystem.
+  const fsContent = readAgentStateFs(FILENAME);
+  return fsContent?.projects || [];
 }
 
 // Public: edit a project entry by id. Used by the admin dashboard.
