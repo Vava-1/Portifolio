@@ -7,6 +7,7 @@ import { PROFILE, AI_SYSTEM_CONTEXT } from '@/data/profile';
 import { buildReposContextBlock, getKnowledge } from '@/lib/agent/knowledge';
 import { listAutoProjects } from '@/lib/agent/projects';
 import { logActivity } from '@/lib/agent/activity';
+import { getConfigValue } from '@/lib/agent/config';
 
 const requestLog = new Map();
 const WINDOW_MS = 60_000;
@@ -40,7 +41,7 @@ export async function POST(req) {
       return Response.json({ error: 'Invalid message' }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = await getConfigValue('GEMINI_API_KEY');
     if (!apiKey) {
       return Response.json({
         reply: `I'm not connected to an AI model right now. Valentin needs to add a free Gemini API key as GEMINI_API_KEY in the environment. In the meantime, you can reach him directly at ${PROFILE.email} or on WhatsApp at ${PROFILE.whatsapp}.`,

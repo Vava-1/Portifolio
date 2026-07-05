@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, Trash2, Edit2, Save, X, ExternalLink, Activity, Bot, Database, LogOut } from 'lucide-react';
+import { RefreshCw, Trash2, Edit2, Save, X, ExternalLink, Activity, Bot, Database, LogOut, Key, Plus, Check } from 'lucide-react';
 
 const TYPE_COLORS = {
   sync: 'var(--color-violet)',
@@ -16,6 +16,9 @@ export default function AdminDashboard() {
   const [state, setState] = useState(null);
   const [activity, setActivity] = useState([]);
   const [autoProjects, setAutoProjects] = useState([]);
+  const [configItems, setConfigItems] = useState([]);
+  const [newConfigKey, setNewConfigKey] = useState('');
+  const [newConfigValue, setNewConfigValue] = useState('');
   const [loadingState, setLoadingState] = useState(true);
   const [loadingActivity, setLoadingActivity] = useState(true);
   const [syncing, setSyncing] = useState(false);
@@ -68,6 +71,54 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  const loadConfig = useCallback(async () => {
+    try {
+      const res = await fetch('/api/agent/config');
+      const data = await res.json();
+      if (data?.ok) setConfigItems(data.items || []);
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  const handleSetConfig = async (key, value) => {
+    if (!key || !value) return;
+    try {
+      const res = await fetch('/api/agent/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value }),
+      });
+      const data = await res.json();
+      if (data?.ok) {
+        showToast(`Config "${key}" saved.`, 'ok');
+        setNewConfigKey('');
+        setNewConfigValue('');
+        await Promise.all([loadConfig(), loadActivity()]);
+      } else {
+        showToast(data?.error || 'Save failed.', 'error');
+      }
+    } catch (e) {
+      showToast(e.message, 'error');
+    }
+  };
+
+  const handleDeleteConfig = async (key) => {
+    if (!confirm(`Remove config "${key}"? The agent will fall back to Vercel env vars (or stop using it).`)) return;
+    try {
+      const res = await fetch(`/api/agent/config?key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data?.ok) {
+        showToast(`Config "${key}" removed.`, 'ok');
+        await Promise.all([loadConfig(), loadActivity()]);
+      } else {
+        showToast(data?.error || 'Delete failed.', 'error');
+      }
+    } catch (e) {
+      showToast(e.message, 'error');
+    }
+  };
+
   useEffect(() => {
     loadState().then(() => {
       // After loading state, if the knowledge base is empty or the last sync
@@ -75,8 +126,9 @@ export default function AdminDashboard() {
       // The user doesn't have to remember to click the button.
       loadActivity();
       loadProjects();
+      loadConfig();
     });
-  }, [loadState, loadActivity, loadProjects]);
+  }, [loadState, loadActivity, loadProjects, loadConfig]);
 
   // Auto-sync when the dashboard loads and the knowledge base is stale.
   useEffect(() => {
@@ -296,6 +348,94 @@ CRON_SECRET           (Optional) If set, external cron services must
               ))}
             </div>
           )}
+        </section>
+
+        {/* Agent configuration */}
+        <section>
+          <p className="eyebrow mb-3">Agent configuration</p>
+          <p className="text-sm mb-4" style={{ color: 'var(--color-haze)' }}>
+            These are secrets and config values the agent needs to do its job. They are stored in <code className="font-mono text-xs" style={{ color: 'var(--color-amber)' }}>.agent/config.json</code> in the repo (not in source code). If a key is also set as a Vercel env var, the env var wins.
+          </p>
+
+          {/* Existing config items */}
+          {configItems.length > 0 && (
+            <div className="space-y-2 mb-4">
+              {configItems.map(item => (
+                <div key={item.key} className="panel p-4 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <Key className="w-4 h-4 shrink-0" style={{ color: 'var(--color-amber)' }} />
+                    <div className="min-w-0">
+                      <p className="font-mono text-sm" style={{ color: 'var(--color-mist)' }}>{item.key}</p>
+                      <p className="font-mono text-xs truncate" style={{ color: 'var(--color-haze)' }}>{item.preview || '(empty)'}</p>
+                    </div>
+                    {item.isSet && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono shrink-0" style={{ background: 'rgba(52,211,153,0.15)', color: '#34D399' }}>
+                        <Check className="w-2.5 h-2.5" /> set
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleDeleteConfig(item.key)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)' }}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" style={{ color: '#F87171' }} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Quick-set Gemini API key */}
+          <div className="panel p-5 mb-3" style={{ borderColor: 'rgba(232,163,61,0.35)' }}>
+            <p className="text-sm font-medium mb-1" style={{ color: 'var(--color-mist)' }}>Quick set: Gemini API key</p>
+            <p className="text-xs mb-3" style={{ color: 'var(--color-haze)' }}>
+              Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: 'var(--color-amber)' }}>aistudio.google.com/apikey</a>. This powers the visitor chat and the auto-project-description writer.
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                className="input-field flex-1"
+                placeholder="Paste your Gemini API key here"
+                value={newConfigKey === 'GEMINI_API_KEY' ? newConfigValue : ''}
+                onChange={e => { setNewConfigKey('GEMINI_API_KEY'); setNewConfigValue(e.target.value); }}
+              />
+              <button
+                onClick={() => handleSetConfig('GEMINI_API_KEY', newConfigValue)}
+                disabled={!newConfigValue || newConfigKey !== 'GEMINI_API_KEY'}
+                className="btn-primary py-2 px-4 text-xs"
+              >
+                <Save className="w-3.5 h-3.5" /> Save key
+              </button>
+            </div>
+          </div>
+
+          {/* Custom config (advanced) */}
+          <details className="panel p-5">
+            <summary className="cursor-pointer text-sm font-medium" style={{ color: 'var(--color-mist)' }}>Add a custom config value (advanced)</summary>
+            <div className="mt-4 flex flex-col sm:flex-row gap-2">
+              <input
+                className="input-field flex-1"
+                placeholder="KEY (e.g. OPENAI_API_KEY)"
+                value={newConfigKey === 'GEMINI_API_KEY' ? '' : newConfigKey}
+                onChange={e => setNewConfigKey(e.target.value)}
+              />
+              <input
+                className="input-field flex-1"
+                type="password"
+                placeholder="value"
+                value={newConfigKey === 'GEMINI_API_KEY' ? '' : newConfigValue}
+                onChange={e => setNewConfigValue(e.target.value)}
+              />
+              <button
+                onClick={() => handleSetConfig(newConfigKey, newConfigValue)}
+                disabled={!newConfigKey || !newConfigValue || newConfigKey === 'GEMINI_API_KEY'}
+                className="btn-primary py-2 px-4 text-xs"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add
+              </button>
+            </div>
+          </details>
         </section>
 
         {/* Activity log */}

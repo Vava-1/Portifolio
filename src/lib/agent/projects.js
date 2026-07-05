@@ -11,6 +11,7 @@
 import { readAgentState, writeAgentState } from './github.js';
 import { logActivity } from './activity.js';
 import { getKnowledge } from './knowledge.js';
+import { getConfigValue } from './config.js';
 
 const FILENAME = 'projects.json';
 
@@ -59,7 +60,7 @@ function yearFromDates(repo) {
 
 // Use Gemini to write a short project description from the README excerpt.
 async function generateDescription(repo) {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = await getConfigValue('GEMINI_API_KEY');
   const readme = repo.readmeExcerpt || repo.description || '';
   if (!readme) {
     return `Auto-discovered from GitHub. No README available. Language: ${repo.language}.`;
