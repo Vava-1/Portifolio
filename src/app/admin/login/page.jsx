@@ -27,8 +27,17 @@ function LoginForm() {
         return;
       }
       setStatus('ok');
-      router.replace(next);
-      router.refresh();
+      // Use a hard navigation (window.location) instead of client-side routing.
+      // This forces a full page load, which guarantees the proxy middleware
+      // sees the newly-set session cookie and lets us through to /admin.
+      // Client-side navigation (router.replace) can race with the cookie
+      // being written to the browser's cookie jar.
+      if (typeof window !== 'undefined') {
+        window.location.href = next;
+      } else {
+        router.replace(next);
+        router.refresh();
+      }
     } catch {
       setError('Network error.');
       setStatus('error');
@@ -53,7 +62,7 @@ function LoginForm() {
       />
 
       <button type="submit" disabled={status === 'loading'} className="btn-primary w-full justify-center">
-        {status === 'loading' ? 'Signing in...' : 'Sign in'}
+        {status === 'loading' ? 'Signing in...' : status === 'ok' ? 'Redirecting...' : 'Sign in'}
       </button>
 
       {status === 'error' && (

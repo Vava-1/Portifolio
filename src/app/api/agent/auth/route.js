@@ -10,7 +10,7 @@ export async function POST(req) {
     const body = await req.json();
     if (body?.logout) {
       const res = Response.json({ ok: true });
-      res.headers.append('Set-Cookie', `${SESSION_COOKIE_NAME}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`);
+      res.headers.append('Set-Cookie', `${SESSION_COOKIE_NAME}=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0`);
       return res;
     }
 
@@ -34,7 +34,7 @@ export async function POST(req) {
     });
 
     const res = Response.json({ ok: true });
-    res.headers.append('Set-Cookie', `${SESSION_COOKIE_NAME}=${token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${Math.floor(SESSION_TTL / 1000)}`);
+    res.headers.append('Set-Cookie', `${SESSION_COOKIE_NAME}=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${Math.floor(SESSION_TTL / 1000)}`);
     return res;
   } catch (err) {
     console.error('[agent] auth failed:', err);
