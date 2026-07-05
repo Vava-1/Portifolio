@@ -21,6 +21,14 @@ const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 const enc = new TextEncoder();
 
+function bytesToHex(bytes) {
+  let hex = '';
+  for (let i = 0; i < bytes.length; i++) {
+    hex += bytes[i].toString(16).padStart(2, '0');
+  }
+  return hex;
+}
+
 async function hmac(value) {
   const secret = process.env.ADMIN_SESSION_SECRET;
   if (!secret) throw new Error('ADMIN_SESSION_SECRET is not set. The admin dashboard cannot be secured without it.');
@@ -32,7 +40,7 @@ async function hmac(value) {
     ['sign']
   );
   const sig = await crypto.subtle.sign('HMAC', key, enc.encode(value));
-  return Buffer.from(new Uint8Array(sig)).toString('hex');
+  return bytesToHex(new Uint8Array(sig));
 }
 
 // Public: create a signed session token valid for SESSION_TTL_MS.
