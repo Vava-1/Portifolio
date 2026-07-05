@@ -31,7 +31,7 @@ export default function Contact() {
         // No email service connected yet, fall back to opening the user's
         // own mail client with everything pre-filled. Always works.
         const subject = encodeURIComponent(`New message from ${form.name}`);
-        const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`);
+        const body = encodeURIComponent(`${form.message}\n\nFrom ${form.name} (${form.email})`);
         window.location.href = `mailto:${PROFILE.email}?subject=${subject}&body=${body}`;
         setStatus('sent');
         return;
@@ -67,7 +67,7 @@ export default function Contact() {
               Want to work together? Let's talk.
             </h2>
             <p className="text-base leading-relaxed mb-8 max-w-md" style={{ color: 'var(--color-haze)' }}>
-              Client project, a role, a partnership, or just a question — the form here is the fastest way to reach me. I read every message myself and reply personally.
+              Client project, a role, a partnership, or just a question. The form here is the fastest way to reach me. I read every message myself and reply personally.
             </p>
 
             {/* Email contacts */}

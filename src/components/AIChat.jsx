@@ -10,7 +10,7 @@ const SUGGESTIONS = [
   'Is he available for new projects?',
 ];
 
-const WELCOME = `Hi! I'm an AI assistant that knows ${PROFILE.name}'s work. Ask me what he's built, how he works, or anything else — I'll keep it honest.`;
+const WELCOME = `Hi! I'm an AI assistant that knows ${PROFILE.name}'s work. Ask me what he's built, how he works, or anything else. I'll keep it honest.`;
 
 export default function AIChat() {
   const [messages, setMessages] = useState([{ role: 'assistant', content: WELCOME }]);
@@ -35,7 +35,7 @@ export default function AIChat() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('/api/agent/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: trimmed, history: nextMessages.slice(0, -1) }),
@@ -130,7 +130,7 @@ export default function AIChat() {
         <input
           value={input}
           onChange={e => setInput(e.target.value)}
-          placeholder="Ask anything — what he's built, how he works, whether he's free..."
+          placeholder="Ask anything. What he's built, how he works, whether he's free..."
           className="input-field flex-1 text-sm py-2.5"
           maxLength={500}
         />
@@ -146,7 +146,7 @@ export default function AIChat() {
 
       {notConfigured && (
         <p className="px-5 pb-4 text-xs" style={{ color: 'var(--color-haze)' }}>
-          Running in offline mode until a Gemini API key is added — but you can still reach Valentin directly via the contact section.
+          Running in offline mode until a Gemini API key is added. But you can still reach Valentin directly via the contact section.
         </p>
       )}
     </div>
