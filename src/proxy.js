@@ -1,6 +1,7 @@
-// Middleware: protect /admin and the admin-only agent API endpoints.
-// Public endpoints (/api/agent/chat, /api/agent/auth, /api/agent/projects GET,
-// /api/agent/sync for cron) are allowed through.
+// Proxy (formerly middleware in Next.js 15 and earlier): protect /admin and
+// the admin-only agent API endpoints. Public endpoints
+// (/api/agent/chat, /api/agent/auth, /api/agent/projects GET, /api/agent/sync
+// for cron) are allowed through.
 
 import { NextResponse } from 'next/server';
 import { verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/agent/auth';
@@ -16,7 +17,7 @@ function extractToken(req) {
   return match?.[1];
 }
 
-export async function middleware(req) {
+export async function proxy(req) {
   const { pathname } = req.nextUrl;
 
   // 1. Block all /admin/* routes except the login page itself.
