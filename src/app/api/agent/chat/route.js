@@ -76,17 +76,30 @@ Remember: you are talking to a visitor. Be honest, warm, and specific. If asked 
       { role: 'user', parts: [{ text: message }] },
     ];
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents,
-      config: {
-        systemInstruction: fullSystemContext,
-        maxOutputTokens: 500,
-        temperature: 0.7,
-      },
-    });
+    // Try gemini-2.5-flash first; if it fails (region, quota, deprecation),
+    // fall back to gemini-2.0-flash which is more broadly available.
+    const models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+    let response = null;
+    let lastErr = null;
+    for (const model of models) {
+      try {
+        response = await ai.models.generateContent({
+          model,
+          contents,
+          config: {
+            systemInstruction: fullSystemContext,
+            maxOutputTokens: 500,
+            temperature: 0.7,
+          },
+        });
+        if (response?.text) break;
+      } catch (e) {
+        lastErr = e;
+        // Try the next model.
+      }
+    }
 
-    const reply = response.text || "I wasn't able to put together an answer for that. Try rephrasing, or use the contact form to reach Valentin directly.";
+    const reply = response?.text || "I wasn't able to put together an answer for that. Try rephrasing, or use the contact form to reach Valentin directly.";
 
     // Log the conversation (subject to throttling in logActivity).
     await logActivity({

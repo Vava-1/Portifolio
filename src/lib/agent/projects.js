@@ -80,18 +80,28 @@ README excerpt:
 ${readme}
 
 Write the description now. Plain text only, no markdown.`;
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 400 },
-      }),
-    });
-    if (!res.ok) return readme.slice(0, 600);
-    const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return (text || readme).trim().slice(0, 1000);
+
+    // Try gemini-2.5-flash first; fall back to gemini-2.0-flash if it fails.
+    const models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+    for (const model of models) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 400 },
+          }),
+        });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) return text.trim().slice(0, 1000);
+      } catch {
+        // Try next model.
+      }
+    }
+    return readme.slice(0, 600);
   } catch {
     return readme.slice(0, 600);
   }
