@@ -180,13 +180,25 @@ function AdminDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.knowledge?.lastSyncAt]);
 
+  const [diagnostics, setDiagnostics] = useState(null);
+  const [runningDiag, setRunningDiag] = useState(false);
+
   const handleSync = async () => {
     setSyncing(true);
     try {
       const res = await fetch('/api/agent/sync', { method: 'POST' });
       const data = await res.json();
       if (data?.ok) {
-        showToast(`Synced. ${data.newProjects?.length || 0} new project(s) discovered.`, 'ok');
+        if (data.partial && data.warnings?.length > 0) {
+          const w = data.warnings[0];
+          showToast(`Sync partial: ${w.message}`, 'error');
+          // If it's a write permission issue, auto-run diagnostics
+          if (w.kind === 'write_permission') {
+            handleRunDiagnostics();
+          }
+        } else {
+          showToast(`Synced. ${data.newProjects?.length || 0} new project(s) discovered.`, 'ok');
+        }
         await Promise.all([loadState(), loadActivity(), loadProjects()]);
       } else {
         showToast(data?.error || 'Sync failed.', 'error');
@@ -195,6 +207,19 @@ function AdminDashboard() {
       showToast(e.message, 'error');
     } finally {
       setSyncing(false);
+    }
+  };
+
+  const handleRunDiagnostics = async () => {
+    setRunningDiag(true);
+    try {
+      const res = await fetch('/api/agent/diagnose');
+      const data = await res.json();
+      setDiagnostics(data);
+    } catch (e) {
+      showToast(e.message, 'error');
+    } finally {
+      setRunningDiag(false);
     }
   };
 
@@ -280,6 +305,10 @@ function AdminDashboard() {
               <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
               {syncing ? 'Syncing...' : 'Sync now'}
             </button>
+            <button onClick={handleRunDiagnostics} disabled={runningDiag} className="btn-outline py-2 px-4 text-xs flex items-center gap-1.5">
+              <Activity className={`w-3.5 h-3.5 ${runningDiag ? 'animate-pulse' : ''}`} />
+              {runningDiag ? 'Checking...' : 'Diagnostics'}
+            </button>
             <a href="/" className="btn-outline py-2 px-4 text-xs">View site</a>
             <button onClick={handleLogout} className="btn-outline py-2 px-4 text-xs flex items-center gap-1.5">
               <LogOut className="w-3.5 h-3.5" /> Sign out
@@ -324,6 +353,103 @@ CRON_SECRET           (Optional) If set, external cron services must
             </div>
           )}
         </section>
+
+        {/* Diagnostics */}
+        {diagnostics && (
+          <section>
+            <p className="eyebrow mb-3">Diagnostics</p>
+            <div className="panel p-6">
+              {/* PAT status */}
+              <div className="mb-4">
+                <p className="font-mono text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--color-haze)' }}>GitHub PAT</p>
+                <div className="flex items-center gap-2">
+                  {diagnostics.pat.isSet ? (
+                    <>
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono" style={{ background: 'rgba(52,211,153,0.15)', color: '#34D399' }}>
+                        <Check className="w-3 h-3" /> SET
+                      </span>
+                      <span className="font-mono text-xs" style={{ color: 'var(--color-haze)' }}>{diagnostics.pat.prefix}</span>
+                    </>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono" style={{ background: 'rgba(248,113,113,0.15)', color: '#F87171' }}>
+                      <X className="w-3 h-3" /> NOT SET
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Read permission */}
+              <div className="mb-4">
+                <p className="font-mono text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--color-haze)' }}>Read access (list repos)</p>
+                {diagnostics.read.canListRepos ? (
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono" style={{ background: 'rgba(52,211,153,0.15)', color: '#34D399' }}>
+                      <Check className="w-3 h-3" /> OK
+                    </span>
+                    <span className="text-sm" style={{ color: 'var(--color-mist)' }}>{diagnostics.read.repoCount} repos readable</span>
+                  </div>
+                ) : (
+                  <div>
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono" style={{ background: 'rgba(248,113,113,0.15)', color: '#F87171' }}>
+                      <X className="w-3 h-3" /> FAILED
+                    </span>
+                    <p className="text-xs mt-2" style={{ color: 'var(--color-haze)' }}>{diagnostics.read.error}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Write permission */}
+              <div className="mb-4">
+                <p className="font-mono text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--color-haze)' }}>Write access (commit to Portifolio repo)</p>
+                {diagnostics.write.canWritePortifolio ? (
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono" style={{ background: 'rgba(52,211,153,0.15)', color: '#34D399' }}>
+                      <Check className="w-3 h-3" /> OK
+                    </span>
+                    <span className="text-sm" style={{ color: 'var(--color-mist)' }}>Agent can commit state files</span>
+                  </div>
+                ) : (
+                  <div>
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono" style={{ background: 'rgba(248,113,113,0.15)', color: '#F87171' }}>
+                      <X className="w-3 h-3" /> FAILED
+                    </span>
+                    <p className="text-xs mt-2" style={{ color: 'var(--color-haze)' }}>{diagnostics.write.error}</p>
+                    {diagnostics.write.details && (
+                      <p className="text-xs mt-1" style={{ color: 'var(--color-amber)' }}>{diagnostics.write.details}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Env vars */}
+              <div className="mb-4">
+                <p className="font-mono text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--color-haze)' }}>Environment variables on Vercel</p>
+                <div className="space-y-1">
+                  {Object.entries(diagnostics.env).map(([k, v]) => (
+                    <div key={k} className="flex items-center gap-2 text-xs font-mono">
+                      <span style={{ color: 'var(--color-haze)' }}>{k}:</span>
+                      <span style={{ color: v === true || v === false ? (v ? '#34D399' : '#F87171') : 'var(--color-mist)' }}>
+                        {typeof v === 'boolean' ? (v ? 'set' : 'NOT SET') : v}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fix instructions */}
+              {diagnostics.fixInstructions.length > 0 && (
+                <div className="p-4 rounded" style={{ background: 'rgba(232,163,61,0.1)', border: '1px solid rgba(232,163,61,0.35)' }}>
+                  <p className="text-sm font-medium mb-2" style={{ color: 'var(--color-amber)' }}>How to fix:</p>
+                  <ol className="text-xs space-y-1.5 list-decimal list-inside" style={{ color: 'var(--color-mist)' }}>
+                    {diagnostics.fixInstructions.map((inst, i) => (
+                      <li key={i}>{inst}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
         {/* Auto-discovered projects */}
         <section>
